@@ -5,38 +5,48 @@ import { useState } from "react"
 
 export default function Home (){
 // define state 
-const[todos, setTodos] = useState([
-  {task:"laundry", id:1},
-])
-  const[inputVal, setInput] = useState("");
-  const[id, setId] = useState(0);
+type Todo = {
+  task: string;
+  id: number;
+};
+
+const [todos, setTodos] = useState<Todo[]>([
+  { task: "laundry", id: 1 },
+]);
+
+const [inputVal, setInput] = useState<string>("");
+const [id, setId] = useState<number>(0);
+
   //functions
 
-  const addItem=()=>{
-    let obj:any= todos.find(item => item.id == id)
-    if(obj){
-      let newArray = todos.filter(item=> item.id !== obj.id)
-      setTodos([...newArray,{task:inputVal, id:id}])
-    setInput("")
-    setId(0)
-    return
+  const addItem = () => {
+    const obj: Todo | undefined = todos.find((item) => item.id === id);
+
+    if (obj) {
+      const newArray: Todo[] = todos.filter((item) => item.id !== obj.id);
+      setTodos([...newArray, { task: inputVal, id }]);
+    } else {
+      setTodos([...todos, { task: inputVal, id }]);
     }
-    setTodos([...todos,{task:inputVal, id:id}])
-    setInput("")
-    setId(0)
-    
-  }
 
-  const editItem=(id:any)=>{
-    let obj:any= todos.find(item => item.id == id)
-    setInput(obj.task)
-    setId(obj.id)
-  }
+    setInput("");
+    setId(0);
+  };
 
-  const deleteItem=(id:any)=>{
-    let newArray = todos.filter(item=> item.id !== id)
-      setTodos([...newArray])
-  }
+  const editItem = (id: number) => {
+    const obj: Todo | undefined = todos.find(item => item.id === id);
+    if (obj) {
+      setInput(obj.task);
+      setId(obj.id);
+    }
+  };
+  
+
+  const deleteItem = (id: number) => {
+    const newArray: Todo[] = todos.filter(item => item.id !== id);
+    setTodos(newArray);
+  };
+  
   
   return(
     <div><ModeToggle/>
@@ -48,14 +58,14 @@ const[todos, setTodos] = useState([
         <input 
         type="text"
        value= {inputVal}
-        onChange={(e)=> setInput(e.target.value)}
+       onChange={(e) => setInput(e.target.value)}
         className="w-[80%] p-3 rounded-l-md  rounded-r-md border-b  border-r focus:outline-none"
         placeholder="Write Task"
           />
           <input
           type="number"
           value={id}
-          onChange={(e:any)=>setId(e.target.value)}
+          onChange={(e) => setId(Number(e.target.value))}
            className="w-[15%] p-3 rounded-l-md  rounded-r-md border-b  border-r focus:outline-none" placeholder=" Type ID"/>
         { <button 
         onClick={addItem}
@@ -65,7 +75,7 @@ const[todos, setTodos] = useState([
       <div className="grid grid-cols-1 mt-5  ">
         {/* grid items */}
         {
-          todos.map((item:any, i:any)=>{
+         todos.map((item: Todo, i: number) => {
             return(
               
               <div className="shadow p-3 w-[90%] "key={i}>
